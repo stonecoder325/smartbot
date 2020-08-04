@@ -16,6 +16,7 @@ import os
 import sys
 import random
 import requests
+from opencc import OpenCC
 
 from wsgiref.simple_server import make_server
 from argparse import ArgumentParser
@@ -79,8 +80,10 @@ def application(environ, start_response):
         print('event: ', event)
         print('event.type: ', event.type)
         print('event.message: ', event.message)
-        r = requests.get('http://www.weather.com.cn/data/sk/101020100.html')
+        r = requests.get('http://www.weather.com.cn/data/sk/101340101.html')
         r.encoding = 'utf-8'
+        cc = OpenCC('s2tw')
+        r = cc.convert(r)
         print(r.json()['weatherinfo']['city'], r.json()['weatherinfo']['WD'], r.json()['weatherinfo']['temp'])
 
         if not isinstance(event, MessageEvent):
