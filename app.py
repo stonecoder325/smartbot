@@ -29,7 +29,8 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import (
-    MessageEvent, TextMessage, StickerMessage, TextSendMessage, ImageSendMessage, StickerSendMessage
+    MessageEvent, TextMessage, StickerMessage, TextSendMessage, ImageSendMessage, StickerSendMessage,
+    TemplateSendMessage, ButtonsTemplate, MessageTemplateAction, URITemplateAction, PostbackTemplateAction
 )
 from linebot.utils import PY3
 
@@ -106,6 +107,41 @@ def application(environ, start_response):
                 line_bot_api.reply_message(
                     event.reply_token,
                     TextSendMessage(text=res)
+                )
+            elif m_text == 't1':
+                r = requests.get('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-E24E5D1A-087F-429E-A376-E2E1D25A0F60&locationName=%E6%96%B0%E5%8C%97%E5%B8%82&elementName=MaxT')
+                r.encoding = 'utf-8'
+                cc = OpenCC('s2tw')
+                locate = cc.convert(r.json()['records']['location'][0]['locationName'])
+                temp = cc.convert(r.json()['records']['location'][0]['weatherElement'][0]['time'][0]['parameter']['parameterName'])
+                res = locate + '的氣溫為'+temp+'C'
+                image_url = 'https://i.imgur.com/OqESt0b.jpeg'
+                buttons_template = TemplateSendMessage(
+                    alt_text='Buttons Template',
+                    template=ButtonsTemplate(
+                        title='ButtonsTemplate',
+                        text='Buttons title',
+                        thumbnail_image_url=image_url,
+                        actions=[
+                            MessageTemplateAction(
+                                label='ButtonsTemplate',
+                                text=res
+                            ),
+                            URITemplateAction(
+                                label='VIDEO1',
+                                uri=image_url
+                            ),
+                            PostbackTemplateAction(
+                                label='postback',
+                                text='postback text',
+                                data='postback1'
+                            )
+                        ]
+                    )
+                )
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    buttons_template
                 )
             else:
                 line_bot_api.reply_message(
