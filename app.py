@@ -80,11 +80,6 @@ def application(environ, start_response):
         print('event: ', event)
         print('event.type: ', event.type)
         print('event.message: ', event.message)
-        r = requests.get('http://www.weather.com.cn/data/sk/101340101.html')
-        r.encoding = 'utf-8'
-        cc = OpenCC('s2tw')
-        r = cc.convert(r)
-        print(r.json()['weatherinfo']['city'], r.json()['weatherinfo']['WD'], r.json()['weatherinfo']['temp'])
 
         if not isinstance(event, MessageEvent):
             continue
@@ -100,6 +95,17 @@ def application(environ, start_response):
                 line_bot_api.reply_message(
                     event.reply_token,
                     ImageSendMessage(original_content_url=image_url, preview_image_url=image_url)
+                )
+            elif m_text == '天氣':
+                r = requests.get('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-E24E5D1A-087F-429E-A376-E2E1D25A0F60&locationName=%E6%96%B0%E5%8C%97%E5%B8%82&elementName=MaxT')
+                r.encoding = 'utf-8'
+                cc = OpenCC('s2tw')
+                locate = cc.convert(r.json()['records']['location'][0]['locationName'])
+                temp = cc.convert(r.json()['records']['location'][0]['weatherElement'][0]['time'][0]['parameter']['parameterName'])
+                res = locate + '的氣溫為'+temp+'C'
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage(text=res)
                 )
             else:
                 line_bot_api.reply_message(
