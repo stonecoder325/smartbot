@@ -30,7 +30,8 @@ from linebot.exceptions import (
 )
 from linebot.models import (
     MessageEvent, TextMessage, StickerMessage, TextSendMessage, ImageSendMessage, StickerSendMessage,
-    TemplateSendMessage, ButtonsTemplate, MessageTemplateAction, URITemplateAction, PostbackTemplateAction
+    TemplateSendMessage, ButtonsTemplate, MessageTemplateAction, URITemplateAction, PostbackTemplateAction,
+    CarouselTemplate, CarouselColumn
 )
 from linebot.utils import PY3
 
@@ -124,25 +125,76 @@ def application(environ, start_response):
                         thumbnail_image_url=image_url,
                         actions=[
                             MessageTemplateAction(
-                                label='ButtonsTemplate',
+                                label='MessageTemplateAction',
                                 text=res
                             ),
                             URITemplateAction(
-                                label='VIDEO1',
+                                label='URITemplateAction',
                                 uri=image_url
                             ),
                             PostbackTemplateAction(
-                                label='postback',
-                                text='postback text',
+                                label='PostbackTemplateAction',
                                 data='postback1'
                             )
                         ]
                     )
                 )
+                print(buttons_template)
                 line_bot_api.reply_message(
                     event.reply_token,
                     buttons_template
                 )
+            # elif m_text == 't2':
+            #     carousel_template = TemplateSendMessage(
+            #         alt_text='Carousel template',
+            #         template=CarouselTemplate(
+            #             columns=[
+            #                 CarouselColumn(
+            #                     thumbnail_image_url='https://www.ttshow.tw/media/uploads/2020/02/07/1561674586.JPG',
+            #                     title='CarouselColumn 1',
+            #                     text='description 1',
+            #                     actions=[
+            #                         MessageTemplateAction(
+            #                             label='MessageTemplateAction 1',
+            #                             text='message text 1'
+            #                         ),
+            #                         URITemplateAction(
+            #                             label='URITemplateAction 1',
+            #                             uri='https://www.ttshow.tw/media/uploads/2020/02/07/1561674586.JPG'
+            #                         ),
+            #                         PostbackTemplateAction(
+            #                             label='PostbackTemplateAction 1',
+            #                             data='action=buy&itemid=1'
+            #                         )
+            #                     ]
+            #                 ),
+            #                 CarouselColumn(
+            #                     thumbnail_image_url='https://www.mrplayer.tw/photos/shares/1709272/fun_201709274/59cb3f9a95f72.png',
+            #                     title='CarouselColumn 2',
+            #                     text='description 2',
+            #                     actions=[
+            #                         MessageTemplateAction(
+            #                             label='MessageTemplateAction 2',
+            #                             text='message text 2'
+            #                         ),
+            #                         URITemplateAction(
+            #                             label='URITemplateAction 2',
+            #                             uri='https://www.mrplayer.tw/photos/shares/1709272/fun_201709274/59cb3f9a95f72.png'
+            #                         ),
+            #                         PostbackTemplateAction(
+            #                             label='PostbackTemplateAction 2',
+            #                             data='action=buy&itemid=2'
+            #                         )
+            #                     ]
+            #                 )
+            #             ]
+            #         )
+            #     )
+            #     print(carousel_template)
+            #     line_bot_api.reply_message(
+            #         event.reply_token,
+            #         carousel_template
+            #     )
             else:
                 line_bot_api.reply_message(
                     event.reply_token,
