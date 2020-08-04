@@ -1,0 +1,14 @@
+{
+  "name": "Line Bot Sample",
+  "description": "快速建立會鬼扯的bot",
+  "repository": "https://github.com/NickYuu/Python_Line_Bot",
+  "keywords": ["python", "linebot", "Sample"],
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-python.git"
+    },
+    {
+      "url": "heroku/python"
+    }
+  ]
+}
