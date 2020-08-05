@@ -90,7 +90,7 @@ def application(environ, start_response):
             if m_text == 'hi':
                 line_bot_api.reply_message(
                     event.reply_token,
-                    TextSendMessage(text=event.message.text)
+                    TextSendMessage(text='你好')
                 )
             elif m_text == '好看的':
                 image_url = 'https://i.imgur.com/OqESt0b.jpeg'
@@ -110,12 +110,6 @@ def application(environ, start_response):
                     TextSendMessage(text=res)
                 )
             elif m_text == 't1':
-                r = requests.get('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-E24E5D1A-087F-429E-A376-E2E1D25A0F60&locationName=%E6%96%B0%E5%8C%97%E5%B8%82&elementName=MaxT')
-                r.encoding = 'utf-8'
-                cc = OpenCC('s2tw')
-                locate = cc.convert(r.json()['records']['location'][0]['locationName'])
-                temp = cc.convert(r.json()['records']['location'][0]['weatherElement'][0]['time'][0]['parameter']['parameterName'])
-                res = locate + '的氣溫為'+temp+'C'
                 image_url = 'https://i.imgur.com/OqESt0b.jpeg'
                 buttons_template = TemplateSendMessage(
                     alt_text='Buttons Template',
@@ -125,80 +119,75 @@ def application(environ, start_response):
                         thumbnail_image_url=image_url,
                         actions=[
                             MessageTemplateAction(
-                                label='MessageTemplateAction',
-                                text=res
+                                label='問天氣',
+                                text='天氣'
                             ),
                             URITemplateAction(
-                                label='URITemplateAction',
+                                label='看大圖',
                                 uri=image_url
+                            )
+                            # PostbackTemplateAction(
+                            #     label='Postback',
+                            #     text='Postback',
+                            #     data='action=buy&itemid=0'
+                            # )
+                        ]
+                    )
+                )
+                line_bot_api.reply_message(event.reply_token, buttons_template)
+            elif m_text == 't2':
+                buttons_template = TemplateSendMessage(
+                    alt_text='Carousel template',
+                    template=CarouselTemplate(
+                        columns=[
+                            CarouselColumn(
+                                title='Carousel template 1',
+                                text='Carousel template 1',
+                                thumbnail_image_url='https://www.ttshow.tw/media/uploads/2020/02/07/1561674586.JPG',
+                                actions=[
+                                    MessageTemplateAction(
+                                        label='Message1',
+                                        text='Message1'
+                                    ),
+                                    URITemplateAction(
+                                        label='URI1',
+                                        uri='https://www.ttshow.tw/media/uploads/2020/02/07/1561674586.JPG'
+                                    )
+                                    # PostbackTemplateAction(
+                                    #     label='Postback1',
+                                    #     text='Postback1',
+                                    #     data='action=buy&itemid=1'
+                                    # )
+                                ]
                             ),
-                            PostbackTemplateAction(
-                                label='PostbackTemplateAction',
-                                data='postback1'
+                            CarouselColumn(
+                                title='Carousel template 2',
+                                text='Carousel template 2',
+                                thumbnail_image_url='https://www.mrplayer.tw/photos/shares/1709272/fun_201709274/59cb3f9a95f72.png',
+                                actions=[
+                                    MessageTemplateAction(
+                                        label='Message2',
+                                        text='Message1'
+                                    ),
+                                    URITemplateAction(
+                                        label='URI2',
+                                        uri='https://www.mrplayer.tw/photos/shares/1709272/fun_201709274/59cb3f9a95f72.png'
+                                    )
+                                    # PostbackTemplateAction(
+                                    #     label='Postback2',
+                                    #     text='Postback2',
+                                    #     data='action=buy&itemid=2'
+                                    # )
+                                ]
                             )
                         ]
                     )
                 )
-                print(buttons_template)
-                line_bot_api.reply_message(
-                    event.reply_token,
-                    buttons_template
-                )
-            # elif m_text == 't2':
-            #     carousel_template = TemplateSendMessage(
-            #         alt_text='Carousel template',
-            #         template=CarouselTemplate(
-            #             columns=[
-            #                 CarouselColumn(
-            #                     thumbnail_image_url='https://www.ttshow.tw/media/uploads/2020/02/07/1561674586.JPG',
-            #                     title='CarouselColumn 1',
-            #                     text='description 1',
-            #                     actions=[
-            #                         MessageTemplateAction(
-            #                             label='MessageTemplateAction 1',
-            #                             text='message text 1'
-            #                         ),
-            #                         URITemplateAction(
-            #                             label='URITemplateAction 1',
-            #                             uri='https://www.ttshow.tw/media/uploads/2020/02/07/1561674586.JPG'
-            #                         ),
-            #                         PostbackTemplateAction(
-            #                             label='PostbackTemplateAction 1',
-            #                             data='action=buy&itemid=1'
-            #                         )
-            #                     ]
-            #                 ),
-            #                 CarouselColumn(
-            #                     thumbnail_image_url='https://www.mrplayer.tw/photos/shares/1709272/fun_201709274/59cb3f9a95f72.png',
-            #                     title='CarouselColumn 2',
-            #                     text='description 2',
-            #                     actions=[
-            #                         MessageTemplateAction(
-            #                             label='MessageTemplateAction 2',
-            #                             text='message text 2'
-            #                         ),
-            #                         URITemplateAction(
-            #                             label='URITemplateAction 2',
-            #                             uri='https://www.mrplayer.tw/photos/shares/1709272/fun_201709274/59cb3f9a95f72.png'
-            #                         ),
-            #                         PostbackTemplateAction(
-            #                             label='PostbackTemplateAction 2',
-            #                             data='action=buy&itemid=2'
-            #                         )
-            #                     ]
-            #                 )
-            #             ]
-            #         )
-            #     )
-            #     print(carousel_template)
-            #     line_bot_api.reply_message(
-            #         event.reply_token,
-            #         carousel_template
-            #     )
+                line_bot_api.reply_message(event.reply_token, buttons_template)
             else:
                 line_bot_api.reply_message(
                     event.reply_token,
-                    TextSendMessage(text='I dont know')
+                    TextSendMessage(text=event.message.text)
                 )
         if isinstance(event.message, StickerMessage):
             line_bot_api.reply_message(
